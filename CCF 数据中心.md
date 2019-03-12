@@ -20,7 +20,7 @@ C++ 代码
 
     struct Edge {
         int next, cost;
-
+        //建立小顶堆
         bool operator<(const Edge &a) const {
             return cost > a.cost;
         }
@@ -32,21 +32,22 @@ C++ 代码
     vector<Edge> vec[MAXN];
 
     int prim() {
-        int Edgecount = n - 1;
-        priority_queue <Edge> q;
+        int Edgecount = n - 1;//遍历顶点数量
+        priority_queue <Edge> q;//优先队列
         for (int i = 0; i < vec[root].size(); ++i) {
             q.push(vec[root][i]);
         }
         memset(vis, 0, sizeof(vis));
         vis[root] = 1;
-        while (!q.empty()) {
-            Edge a = q.top(); q.pop();
-            if (vis[a.next]) continue;
+        while (!q.empty() && Edgecount != 0) {
+            Edge a = q.top(); q.pop();//取出最小顶点，且弹出
+            if (vis[a.next]) continue;//如果访问过就拜拜
+            //没有访问过就加进去
             res.push_back(a.cost);
             Edgecount--;
             vis[a.next] = 1;
             for (int i = 0; i < vec[a.next].size(); ++i) {
-                if (!vis[vec[a.next][i].next]) q.push(vec[a.next][i]);
+                if (!vis[vec[a.next][i].next]) q.push(vec[a.next][i]);//添加的原因，如果这条边没有访问过，都需要加，因为要取得这条边的最小权值
             }
         }
         sort(res.begin(),res.end());
@@ -94,6 +95,7 @@ C++ 代码
         while (b != pre[b]) {
             b = pre[b];
         }
+        //路径压缩
         while (a != b){
             int i = pre[a];
             pre[a] = b;
@@ -103,6 +105,7 @@ C++ 代码
     }
 
     int Kruskal() {
+        //记得初始化父节点
         for (int i = 1; i <= n; ++i) {
             pre[i] = i;
         }
