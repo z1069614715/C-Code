@@ -1,0 +1,70 @@
+[题目链接](http://nuit.io/contest/55/problem/5)
+
+    using namespace std;
+
+    #include <stdio.h>
+    #include <vector>
+    #include <algorithm>
+
+    struct node {
+        int now, next;
+        long long cost;
+    };
+
+    int T, n, m;
+    vector<node> city;
+    int pre[100005];
+
+    int findfa(int a) {
+        int b = a;
+        while (pre[b] != b) {
+            b = pre[b];
+        }
+        int c = a;
+        while (c != b) {
+            int d = pre[c];
+            pre[c] = b;
+            c = d;
+        }
+        return b;
+    }
+
+    int cmp(node a, node b) {
+        return a.cost > b.cost;
+    }
+
+    void Kruskal(int k) {
+        for (int i = 1; i < n + 1; ++i) {
+            pre[i] = i;
+        }
+        int total = 0;
+        long long costTotal = 0;
+        for (int i = 0; i < city.size() && total != n - 1; ++i) {
+            int faA = findfa(city[i].now);
+            int faB = findfa(city[i].next);
+            if (faA != faB) {
+                pre[faB] = faA;
+                ++total;
+                costTotal += city[i].cost;
+            }
+        }
+        if (k != 0) printf("\n");
+        printf("Case %d: %d %lld", (k + 1), total, costTotal);
+    }
+
+    int main() {
+        scanf("%d", &T);
+        for (int i = 0; i < T; ++i) {
+            scanf("%d %d", &n, &m);
+            city.clear();
+            for (int j = 0; j < m; ++j) {
+                int a, b;
+                long long c;
+                scanf("%d %d %lld", &a, &b, &c);
+                city.push_back({a, b, c});
+            }
+            sort(city.begin(), city.end(), cmp);
+            Kruskal(i);
+        }
+        return 0;
+    }
